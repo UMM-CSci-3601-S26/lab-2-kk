@@ -1,9 +1,11 @@
 package umm3601.todo;
 
 import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.regex;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bson.Document;
 import org.bson.UuidRepresentation;
@@ -20,6 +22,7 @@ import umm3601.Controller;
 public class TodoController implements Controller {
 
   private static final String API_TODOS = "/api/todos";
+  static final String OWNER_KEY = "owner";
 
   private final JacksonMongoCollection<Todo> todoCollection;
 
@@ -89,10 +92,10 @@ public class TodoController implements Controller {
     //     .get();
     //   filters.add(eq(AGE_KEY, targetAge));
     // }
-    // if (ctx.queryParamMap().containsKey(COMPANY_KEY)) {
-    //   Pattern pattern = Pattern.compile(Pattern.quote(ctx.queryParam(COMPANY_KEY)), Pattern.CASE_INSENSITIVE);
-    //   filters.add(regex(COMPANY_KEY, pattern));
-    // }
+    if (ctx.queryParamMap().containsKey(OWNER_KEY)) {
+      Pattern pattern = Pattern.compile(Pattern.quote(ctx.queryParam(OWNER_KEY)), Pattern.CASE_INSENSITIVE);
+        filters.add(regex(OWNER_KEY, pattern));
+    }
     // if (ctx.queryParamMap().containsKey(ROLE_KEY)) {
     //   String role = ctx.queryParamAsClass(ROLE_KEY, String.class)
     //     .check(it -> it.matches(ROLE_REGEX), "User must have a legal user role")

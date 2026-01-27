@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -162,6 +164,24 @@ public class TodoControllerSpec {
       db.getCollection("todos").countDocuments(),
       todoArrayListCaptor.getValue().size()
     );
+  }
+
+  @Test
+  void canGetTodoWithOwner() throws IOException {
+    Map<String, List<String>> queryParams = new HashMap<>();
+    queryParams.put(TodoController.OWNER_KEY, Arrays.asList(new String[] {"Kristin"}));
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+    when(ctx.queryParam(TodoController.OWNER_KEY)).thenReturn("Kristin");
+
+    todoController.getTodos(ctx);
+
+    verify(ctx).json(todoArrayListCaptor.capture());
+    verify(ctx).status(HttpStatus.OK);
+
+    // Confirm that all the todos passed to `json` are owned by Kristin.
+    for (Todo todo : todoArrayListCaptor.getValue()) {
+      assertEquals("Kristin", todo.owner);
+    }
   }
 
 }
