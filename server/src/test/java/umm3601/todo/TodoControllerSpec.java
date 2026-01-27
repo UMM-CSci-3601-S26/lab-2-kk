@@ -37,7 +37,6 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 // import io.javalin.json.JavalinJackson;
-import umm3601.user.UserController;
 
 public class TodoControllerSpec {
 
